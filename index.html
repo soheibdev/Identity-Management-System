@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University ID System - Batna 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <span class="navbar-brand fw-bold">🎓 University of Batna 2 – ID System</span>
+    </div>
+</nav>
+
+<!-- Main Cards -->
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Identity Management System</h2>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3">➕</div>
+                    <h5 class="card-title">Create Identity</h5>
+                    <p class="card-text text-muted">Register a new student, faculty, or staff member and generate their unique ID.</p>
+                    <a href="create.html" class="btn btn-primary">Create Identity</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3">🔍</div>
+                    <h5 class="card-title">Search & View</h5>
+                    <p class="card-text text-muted">Search for existing identities by name, email, type, or status.</p>
+                    <a href="search.html" class="btn btn-success">Search</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3">✏️</div>
+                    <h5 class="card-title">Update / Manage</h5>
+                    <p class="card-text text-muted">Edit information or change the status of an identity (suspend, archive, etc.).</p>
+                    <a href="search.html" class="btn btn-warning">Manage</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Status Legend -->
+    <div class="card mt-5">
+        <div class="card-header"><strong>Status Guide</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="badge bg-secondary me-1">Pending</span> Initial creation – documents under review
+                </div>
+                <div class="col-md-4">
+                    <span class="badge bg-success me-1">Active</span> Fully operational account
+                </div>
+                <div class="col-md-4">
+                    <span class="badge bg-warning text-dark me-1">Suspended</span> Temporarily blocked
+                </div>
+                <div class="col-md-4 mt-2">
+                    <span class="badge bg-danger me-1">Inactive</span> No longer affiliated
+                </div>
+                <div class="col-md-4 mt-2">
+                    <span class="badge bg-dark me-1">Archived</span> Legally retained, access removed
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="text-center text-muted mt-5 mb-3">
+    IAM Practical Work – Department of Computer Science, Batna 2
+</footer>
+
+</body>
+</html>

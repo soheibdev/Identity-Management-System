@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Identity – Batna 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Loading overlay -->
+    <div id="loading">⏳ Saving...</div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 Batna 2 ID System</a>
+            <span class="text-white">Create New Identity</span>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+
+        <!-- Success message box (hidden by default) -->
+        <div id="success-box" class="alert alert-success d-none">
+            <h5>✅ Identity Created Successfully!</h5>
+            <p>The unique ID assigned is: <strong id="result-uid"></strong></p>
+            <p id="email-status" class="mb-2"></p>
+            <a href="create.html" class="btn btn-outline-success btn-sm">Create Another</a>
+            <a href="search.html" class="btn btn-outline-primary btn-sm ms-2">Go to Search</a>
+        </div>
+
+        <!-- Main Form Card -->
+        <div id="form-card" class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>New Identity Registration</strong>
+            </div>
+            <div class="card-body">
+
+                <form id="create-form">
+
+                    <!-- STEP 1: Select Identity Type -->
+                    <div class="mb-4">
+                        <div class="section-title">Step 1: Identity Type</div>
+                        <label for="type" class="form-label">Select Type <span class="text-danger">*</span></label>
+                        <select id="type" class="form-select" onchange="onTypeChange()">
+                            <option value="">-- Select a type --</option>
+                            <option value="student">Student (Undergraduate / Continuing / International)</option>
+                            <option value="phd">PhD Candidate</option>
+                            <option value="faculty">Faculty (Tenured / Adjunct / Visiting)</option>
+                            <option value="staff">Staff (Administrative / Technical)</option>
+                            <option value="temporary">Temporary / External</option>
+                        </select>
+                    </div>
+
+                    <!-- STEP 2: Common Fields -->
+                    <div id="common-section" class="d-none">
+                        <div class="section-title">Step 2: Personal Information</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="first_name" class="form-control" placeholder="e.g. Ahmed">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="last_name" class="form-control" placeholder="e.g. Benali">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="date_of_birth" class="form-label">Date of Birth <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" id="date_of_birth" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="place_of_birth" class="form-label">Place of Birth</label>
+                                <input type="text" id="place_of_birth" class="form-control" placeholder="City, Country">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nationality" class="form-label">Nationality</label>
+                                <input type="text" id="nationality" class="form-control" placeholder="e.g. Algerian">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select id="gender" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="email" class="form-label">Personal Email <span
+                                        class="text-danger">*</span></label>
+                                <input type="email" id="email" class="form-control" placeholder="name@email.com">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="phone" class="form-label">Phone Number <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="phone" class="form-control" placeholder="e.g. 0555123456">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Student-Specific Fields -->
+                    <div id="student-section" class="d-none">
+                        <div class="section-title">Step 3: Student Information</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="sub_type_student" class="form-label">Student Sub-type</label>
+                                <select id="sub_type_student" class="form-select">
+                                    <option value="undergraduate">Undergraduate</option>
+                                    <option value="continuing">Continuing Education</option>
+                                    <option value="international">International / Exchange</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="national_id" class="form-label">National ID Number</label>
+                                <input type="text" id="national_id" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="diploma_type" class="form-label">High School Diploma Type</label>
+                                <input type="text" id="diploma_type" class="form-control"
+                                    placeholder="e.g. Baccalaureate">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diploma_year" class="form-label">Diploma Year</label>
+                                <input type="number" id="diploma_year" class="form-control" placeholder="e.g. 2023"
+                                    min="1990" max="2030">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="diploma_honors" class="form-label">Diploma Honors</label>
+                                <select id="diploma_honors" class="form-select">
+                                    <option value="">None</option>
+                                    <option value="Mention Assez Bien">Assez Bien</option>
+                                    <option value="Mention Bien">Bien</option>
+                                    <option value="Mention Très Bien">Très Bien</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="major" class="form-label">Major / Program <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="major" class="form-control" placeholder="e.g. Computer Science">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="entry_year" class="form-label">Entry Year <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" id="entry_year" class="form-control" placeholder="e.g. 2024"
+                                    min="1990" max="2030">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="faculty_name" class="form-label">Faculty</label>
+                                <input type="text" id="faculty_name" class="form-control"
+                                    placeholder="e.g. Faculty of Science">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="department" class="form-label">Department</label>
+                                <input type="text" id="department" class="form-control"
+                                    placeholder="e.g. Dept. of Computer Science">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="group_name" class="form-label">Group</label>
+                                <input type="text" id="group_name" class="form-control" placeholder="e.g. G1">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="scholarship">
+                                <label class="form-check-label" for="scholarship">Scholarship Recipient</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Faculty-Specific Fields -->
+                    <div id="faculty-section" class="d-none">
+                        <div class="section-title">Step 3: Faculty Information</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="sub_type_faculty" class="form-label">Faculty Sub-type</label>
+                                <select id="sub_type_faculty" class="form-select">
+                                    <option value="tenured">Tenured</option>
+                                    <option value="adjunct">Adjunct / Part-time</option>
+                                    <option value="visiting">Visiting Researcher</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="rank" class="form-label">Rank <span class="text-danger">*</span></label>
+                                <select id="rank" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Professor">Professor</option>
+                                    <option value="Associate Professor">Associate Professor</option>
+                                    <option value="Assistant Professor">Assistant Professor</option>
+                                    <option value="Lecturer">Lecturer</option>
+                                    <option value="Researcher">Researcher</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="employment_category" class="form-label">Employment Category</label>
+                                <input type="text" id="employment_category" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="appointment_date" class="form-label">Appointment Start Date</label>
+                                <input type="date" id="appointment_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="primary_dept" class="form-label">Primary Department</label>
+                                <input type="text" id="primary_dept" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="secondary_depts" class="form-label">Secondary Departments</label>
+                                <input type="text" id="secondary_depts" class="form-control"
+                                    placeholder="Separate with commas">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="office_location" class="form-label">Office (Building, Floor, Room)</label>
+                                <input type="text" id="office_location" class="form-control"
+                                    placeholder="e.g. B2, Floor 2, Room 205">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phd_institution" class="form-label">PhD Institution</label>
+                                <input type="text" id="phd_institution" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="research_areas" class="form-label">Research Areas</label>
+                                <input type="text" id="research_areas" class="form-control"
+                                    placeholder="e.g. AI, Networks">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="teaching_hours" class="form-label">Teaching Hours</label>
+                                <input type="number" id="teaching_hours" class="form-control" min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="contract_type" class="form-label">Contract Type</label>
+                                <input type="text" id="contract_type" class="form-control" placeholder="e.g. Permanent">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="contract_start" class="form-label">Contract Start</label>
+                                <input type="date" id="contract_start" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="contract_end" class="form-label">Contract End</label>
+                                <input type="date" id="contract_end" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="habilitation">
+                                <label class="form-check-label" for="habilitation">Habilitation to Supervise Research
+                                    (HDR)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Staff-Specific Fields -->
+                    <div id="staff-section" class="d-none">
+                        <div class="section-title">Step 3: Staff Information</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="sub_type_staff" class="form-label">Staff Sub-type</label>
+                                <select id="sub_type_staff" class="form-select">
+                                    <option value="administrative">Administrative</option>
+                                    <option value="technical">Technical</option>
+                                    <option value="temporary">Temporary</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="job_title" class="form-label">Job Title <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="job_title" class="form-control" placeholder="e.g. Secretary">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="staff_department" class="form-label">Department / Service</label>
+                                <input type="text" id="staff_department" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="grade" class="form-label">Grade</label>
+                                <input type="text" id="grade" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="entry_date" class="form-label">Date of Entry to University</label>
+                                <input type="date" id="entry_date" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div id="submit-section" class="d-none mt-3">
+                        <hr>
+                        <button type="button" class="btn btn-primary btn-lg" onclick="submitForm()">
+                            💾 Save &amp; Generate ID
+                        </button>
+                        <a href="index.html" class="btn btn-secondary btn-lg ms-2">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="utils.js"></script>
+    <!-- EmailJS CDN (for confirmation emails) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="email.js"></script>
+    <script>
+
+        // Show/hide form sections based on selected type
+        function onTypeChange() {
+            const type = document.getElementById('type').value;
+
+            // Hide all specific sections first
+            document.getElementById('common-section').classList.add('d-none');
+            document.getElementById('student-section').classList.add('d-none');
+            document.getElementById('faculty-section').classList.add('d-none');
+            document.getElementById('staff-section').classList.add('d-none');
+            document.getElementById('submit-section').classList.add('d-none');
+
+            if (!type) return;
+
+            // Show common section always
+            document.getElementById('common-section').classList.remove('d-none');
+
+            // Show type-specific section
+            if (type === 'student' || type === 'phd') {
+                document.getElementById('student-section').classList.remove('d-none');
+            } else if (type === 'faculty') {
+                document.getElementById('faculty-section').classList.remove('d-none');
+            } else if (type === 'staff' || type === 'temporary') {
+                document.getElementById('staff-section').classList.remove('d-none');
+            }
+
+            document.getElementById('submit-section').classList.remove('d-none');
+        }
+
+        // Validate all required fields before saving
+        function validateForm(type) {
+            let valid = true;
+
+            // Clear all previous errors
+            ['first_name', 'last_name', 'date_of_birth', 'email', 'phone'].forEach(clearFieldError);
+
+            // First name
+            if (!isValidName(document.getElementById('first_name').value)) {
+                showFieldError('first_name', 'First name must be at least 2 characters.');
+                valid = false;
+            }
+
+            // Last name
+            if (!isValidName(document.getElementById('last_name').value)) {
+                showFieldError('last_name', 'Last name must be at least 2 characters.');
+                valid = false;
+            }
+
+            // Date of birth
+            const dob = document.getElementById('date_of_birth').value;
+            if (!isValidBirthDate(dob)) {
+                showFieldError('date_of_birth', 'Date of birth cannot be in the future.');
+                valid = false;
+            } else if ((type === 'student' || type === 'phd') && !isOldEnough(dob, 16)) {
+                showFieldError('date_of_birth', 'Students must be at least 16 years old.');
+                valid = false;
+            }
+
+            // Email
+            const email = document.getElementById('email').value;
+            if (!isValidEmail(email)) {
+                showFieldError('email', 'Please enter a valid email address.');
+                valid = false;
+            }
+
+            // Phone
+            if (!isValidPhone(document.getElementById('phone').value)) {
+                showFieldError('phone', 'Phone must contain only digits (8-20 characters).');
+                valid = false;
+            }
+
+            // Type-specific required fields
+            if (type === 'student' || type === 'phd') {
+                clearFieldError('major');
+                clearFieldError('entry_year');
+                if (!document.getElementById('major').value.trim()) {
+                    showFieldError('major', 'Major/Program is required.');
+                    valid = false;
+                }
+                if (!document.getElementById('entry_year').value) {
+                    showFieldError('entry_year', 'Entry year is required.');
+                    valid = false;
+                }
+            }
+
+            if (type === 'faculty') {
+                clearFieldError('rank');
+                if (!document.getElementById('rank').value) {
+                    showFieldError('rank', 'Rank is required.');
+                    valid = false;
+                }
+            }
+
+            if (type === 'staff' || type === 'temporary') {
+                clearFieldError('job_title');
+                if (!document.getElementById('job_title').value.trim()) {
+                    showFieldError('job_title', 'Job title is required.');
+                    valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        // Main form submission
+        async function submitForm() {
+            const type = document.getElementById('type').value;
+            if (!type) {
+                alert('Please select an identity type.');
+                return;
+            }
+
+            // Validate
+            if (!validateForm(type)) {
+                alert('Please fix the errors highlighted in the form.');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // Check for duplicate: same name + date of birth
+                const firstName = document.getElementById('first_name').value.trim();
+                const lastName = document.getElementById('last_name').value.trim();
+                const dob = document.getElementById('date_of_birth').value;
+
+                const { data: existing } = await supabase
+                    .from('identities')
+                    .select('uid')
+                    .eq('first_name', firstName)
+                    .eq('last_name', lastName)
+                    .eq('date_of_birth', dob);
+
+                if (existing && existing.length > 0) {
+                    hideLoading();
+                    if (!confirm(`Warning: A person with the same name and date of birth already exists (${existing[0].uid}). Do you still want to create a new identity?`)) {
+                        return;
+                    }
+                    showLoading();
+                }
+
+                // Generate unique ID
+                const uid = await generateUID(type);
+
+                // Save to identities table
+                const { data: identity, error: identityError } = await supabase
+                    .from('identities')
+                    .insert({
+                        uid: uid,
+                        type: type,
+                        status: 'Pending',
+                        first_name: firstName,
+                        last_name: lastName,
+                        date_of_birth: dob,
+                        place_of_birth: document.getElementById('place_of_birth').value.trim(),
+                        nationality: document.getElementById('nationality').value.trim(),
+                        gender: document.getElementById('gender').value,
+                        email: document.getElementById('email').value.trim(),
+                        phone: document.getElementById('phone').value.trim()
+                    })
+                    .select()
+                    .single();
+
+                if (identityError) {
+                    // Check if it's a duplicate email error
+                    if (identityError.message.includes('unique') || identityError.code === '23505') {
+                        hideLoading();
+                        alert('Error: This email address is already registered in the system.');
+                        showFieldError('email', 'This email is already taken.');
+                        return;
+                    }
+                    throw identityError;
+                }
+
+                const identityId = identity.id;
+
+                // Save type-specific details
+                if (type === 'student' || type === 'phd') {
+                    await supabase.from('student_details').insert({
+                        identity_id: identityId,
+                        national_id: document.getElementById('national_id').value.trim(),
+                        diploma_type: document.getElementById('diploma_type').value.trim(),
+                        diploma_year: document.getElementById('diploma_year').value || null,
+                        diploma_honors: document.getElementById('diploma_honors').value,
+                        major: document.getElementById('major').value.trim(),
+                        entry_year: document.getElementById('entry_year').value || null,
+                        faculty: document.getElementById('faculty_name').value.trim(),
+                        department: document.getElementById('department').value.trim(),
+                        group_name: document.getElementById('group_name').value.trim(),
+                        scholarship: document.getElementById('scholarship').checked,
+                        sub_type: type === 'phd' ? 'phd' : document.getElementById('sub_type_student').value
+                    });
+                }
+
+                if (type === 'faculty') {
+                    await supabase.from('faculty_details').insert({
+                        identity_id: identityId,
+                        rank: document.getElementById('rank').value,
+                        employment_category: document.getElementById('employment_category').value.trim(),
+                        appointment_date: document.getElementById('appointment_date').value || null,
+                        primary_dept: document.getElementById('primary_dept').value.trim(),
+                        secondary_depts: document.getElementById('secondary_depts').value.trim(),
+                        office_location: document.getElementById('office_location').value.trim(),
+                        phd_institution: document.getElementById('phd_institution').value.trim(),
+                        research_areas: document.getElementById('research_areas').value.trim(),
+                        habilitation: document.getElementById('habilitation').checked,
+                        contract_type: document.getElementById('contract_type').value.trim(),
+                        contract_start: document.getElementById('contract_start').value || null,
+                        contract_end: document.getElementById('contract_end').value || null,
+                        teaching_hours: document.getElementById('teaching_hours').value || null,
+                        sub_type: document.getElementById('sub_type_faculty').value
+                    });
+                }
+
+                if (type === 'staff' || type === 'temporary') {
+                    await supabase.from('staff_details').insert({
+                        identity_id: identityId,
+                        job_title: document.getElementById('job_title').value.trim(),
+                        department: document.getElementById('staff_department').value.trim(),
+                        grade: document.getElementById('grade').value.trim(),
+                        entry_date: document.getElementById('entry_date').value || null,
+                        sub_type: type === 'temporary' ? 'temporary' : document.getElementById('sub_type_staff').value
+                    });
+                }
+
+                // Save initial status history
+                await supabase.from('status_history').insert({
+                    identity_id: identityId,
+                    old_status: null,
+                    new_status: 'Pending',
+                    note: 'Identity created'
+                });
+
+                // Send confirmation email (non-blocking — email failure won't cancel the save)
+                const recipientEmail = document.getElementById('email').value.trim();
+                let emailStatusHtml = '';
+                try {
+                    const emailResult = await sendConfirmationEmail({
+                        fullName: firstName + ' ' + lastName,
+                        type: type,
+                        uid: uid,
+                        status: 'Pending',
+                        email: recipientEmail
+                    });
+
+                    if (emailResult.success && !emailResult.simulated) {
+                        emailStatusHtml = `<span class="text-success">📧 Confirmation email sent to <strong>${recipientEmail}</strong>.</span>`;
+                    } else if (emailResult.success && emailResult.simulated) {
+                        emailStatusHtml = `<span class="text-muted">📧 Email simulation mode — no real email was sent. See browser console for details.</span>`;
+                    } else {
+                        emailStatusHtml = `<span class="text-warning">⚠️ Email could not be sent: ${emailResult.error || 'unknown error'}.</span>`;
+                    }
+                } catch (emailErr) {
+                    console.warn('Email sending failed:', emailErr);
+                    emailStatusHtml = `<span class="text-warning">⚠️ Email notification could not be sent.</span>`;
+                }
+
+                // Show success
+                hideLoading();
+                document.getElementById('form-card').classList.add('d-none');
+                document.getElementById('result-uid').textContent = uid;
+                document.getElementById('email-status').innerHTML = emailStatusHtml;
+                document.getElementById('success-box').classList.remove('d-none');
+
+            } catch (err) {
+                hideLoading();
+                console.error(err);
+                alert('An error occurred while saving: ' + err.message);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

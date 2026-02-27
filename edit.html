@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Identity – Batna 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading">⏳ Loading...</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-warning">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-dark" href="index.html">🎓 Batna 2 ID System</a>
+        <span class="text-dark fw-bold">Edit Identity</span>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5">
+
+    <!-- Success message -->
+    <div id="success-msg" class="alert alert-success d-none">
+        ✅ Identity updated successfully!
+        <a href="search.html" class="btn btn-sm btn-outline-success ms-2">Back to Search</a>
+    </div>
+
+    <!-- UID Display -->
+    <div id="uid-display" class="mb-3 d-none">
+        <div id="generated-id-box">Loading...</div>
+    </div>
+
+    <!-- Common Info Edit -->
+    <div id="edit-card" class="card shadow-sm d-none">
+        <div class="card-header bg-warning text-dark"><strong>Edit Personal Information</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                    <input type="text" id="e-first_name" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                    <input type="text" id="e-last_name" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="e-date_of_birth" class="form-label">Date of Birth</label>
+                    <input type="date" id="e-date_of_birth" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-place_of_birth" class="form-label">Place of Birth</label>
+                    <input type="text" id="e-place_of_birth" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-nationality" class="form-label">Nationality</label>
+                    <input type="text" id="e-nationality" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="e-gender" class="form-label">Gender</label>
+                    <select id="e-gender" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email" id="e-email" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-phone" class="form-label">Phone <span class="text-danger">*</span></label>
+                    <input type="text" id="e-phone" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Details Edit -->
+    <div id="edit-student" class="card shadow-sm mt-3 d-none">
+        <div class="card-header bg-light"><strong>Student Information</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-sub_type_student" class="form-label">Student Sub-type</label>
+                    <select id="e-sub_type_student" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option value="undergraduate">Undergraduate</option>
+                        <option value="continuing">Continuing Education</option>
+                        <option value="international">International / Exchange</option>
+                        <option value="phd">PhD Candidate</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-national_id" class="form-label">National ID</label>
+                    <input type="text" id="e-national_id" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-major" class="form-label">Major / Program <span class="text-danger">*</span></label>
+                    <input type="text" id="e-major" class="form-control" placeholder="e.g. Computer Science">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-entry_year" class="form-label">Entry Year</label>
+                    <input type="number" id="e-entry_year" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-faculty_name" class="form-label">Faculty</label>
+                    <input type="text" id="e-faculty_name" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-department" class="form-label">Department</label>
+                    <input type="text" id="e-department" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="e-group_name" class="form-label">Group</label>
+                    <input type="text" id="e-group_name" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-diploma_type" class="form-label">Diploma Type</label>
+                    <input type="text" id="e-diploma_type" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-diploma_year" class="form-label">Diploma Year</label>
+                    <input type="number" id="e-diploma_year" class="form-control">
+                </div>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" id="e-scholarship" class="form-check-input">
+                <label for="e-scholarship" class="form-check-label">Scholarship Recipient</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Details Edit -->
+    <div id="edit-faculty" class="card shadow-sm mt-3 d-none">
+        <div class="card-header bg-light"><strong>Faculty Information</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-rank" class="form-label">Rank</label>
+                    <select id="e-rank" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option value="Professor">Professor</option>
+                        <option value="Associate Professor">Associate Professor</option>
+                        <option value="Assistant Professor">Assistant Professor</option>
+                        <option value="Lecturer">Lecturer</option>
+                        <option value="Researcher">Researcher</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-employment_category" class="form-label">Employment Category</label>
+                    <input type="text" id="e-employment_category" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-appointment_date" class="form-label">Appointment Start Date</label>
+                    <input type="date" id="e-appointment_date" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-primary_dept" class="form-label">Primary Department</label>
+                    <input type="text" id="e-primary_dept" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-secondary_depts" class="form-label">Secondary Departments</label>
+                    <input type="text" id="e-secondary_depts" class="form-control" placeholder="Separate with commas">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-sub_type_faculty" class="form-label">Faculty Sub-type</label>
+                    <select id="e-sub_type_faculty" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option value="tenured">Tenured</option>
+                        <option value="adjunct">Adjunct / Part-time</option>
+                        <option value="visiting">Visiting Researcher</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-office_location" class="form-label">Office</label>
+                    <input type="text" id="e-office_location" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-research_areas" class="form-label">Research Areas</label>
+                    <input type="text" id="e-research_areas" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="e-contract_type" class="form-label">Contract Type</label>
+                    <input type="text" id="e-contract_type" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-contract_start" class="form-label">Contract Start</label>
+                    <input type="date" id="e-contract_start" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-contract_end" class="form-label">Contract End</label>
+                    <input type="date" id="e-contract_end" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="e-teaching_hours" class="form-label">Teaching Hours</label>
+                    <input type="number" id="e-teaching_hours" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="e-phd_institution" class="form-label">PhD Institution</label>
+                    <input type="text" id="e-phd_institution" class="form-control">
+                </div>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" id="e-habilitation" class="form-check-input">
+                <label for="e-habilitation" class="form-check-label">Habilitation (HDR)</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Details Edit -->
+    <div id="edit-staff" class="card shadow-sm mt-3 d-none">
+        <div class="card-header bg-light"><strong>Staff Information</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-sub_type_staff" class="form-label">Staff Sub-type</label>
+                    <select id="e-sub_type_staff" class="form-select">
+                        <option value="">-- Select --</option>
+                        <option value="administrative">Administrative</option>
+                        <option value="technical">Technical</option>
+                        <option value="temporary">Temporary</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-job_title" class="form-label">Job Title</label>
+                    <input type="text" id="e-job_title" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-staff_department" class="form-label">Department / Service</label>
+                    <input type="text" id="e-staff_department" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="e-grade" class="form-label">Grade</label>
+                    <input type="text" id="e-grade" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="e-entry_date" class="form-label">Date of Entry</label>
+                    <input type="date" id="e-entry_date" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Change Card -->
+    <div id="edit-status" class="card shadow-sm mt-3 d-none">
+        <div class="card-header bg-light"><strong>Change Status</strong></div>
+        <div class="card-body">
+            <p>Current Status: <span id="current-status-badge"></span></p>
+            <p>Allowed transitions:</p>
+            <div id="status-buttons" class="d-flex gap-2 flex-wrap"></div>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <div id="save-section" class="mt-3 d-none">
+        <hr>
+        <button class="btn btn-warning btn-lg" onclick="saveEdit()">💾 Save Changes</button>
+        <a href="search.html" class="btn btn-secondary btn-lg ms-2">Cancel</a>
+    </div>
+
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="utils.js"></script>
+<script>
+
+// Current identity data stored globally for saving
+let currentIdentity = null;
+let currentDetails = null;
+
+// Load identity on page load
+window.onload = async function() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    if (!id) {
+        alert('No identity ID provided.');
+        window.location.href = 'search.html';
+        return;
+    }
+
+    showLoading();
+
+    // Load main identity
+    const { data: identity, error } = await supabase
+        .from('identities')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error || !identity) {
+        hideLoading();
+        alert('Identity not found.');
+        window.location.href = 'search.html';
+        return;
+    }
+
+    currentIdentity = identity;
+
+    // Load type-specific details
+    if (identity.type === 'student' || identity.type === 'phd') {
+        const { data } = await supabase.from('student_details').select('*').eq('identity_id', id).single();
+        currentDetails = data;
+    } else if (identity.type === 'faculty') {
+        const { data } = await supabase.from('faculty_details').select('*').eq('identity_id', id).single();
+        currentDetails = data;
+    } else if (identity.type === 'staff' || identity.type === 'temporary') {
+        const { data } = await supabase.from('staff_details').select('*').eq('identity_id', id).single();
+        currentDetails = data;
+    }
+
+    hideLoading();
+    populateForm(identity, currentDetails);
+};
+
+// Fill form fields with loaded data
+function populateForm(identity, details) {
+    // Show UID
+    document.getElementById('uid-display').classList.remove('d-none');
+    document.getElementById('generated-id-box').textContent = identity.uid;
+
+    // Common fields
+    document.getElementById('e-first_name').value    = identity.first_name || '';
+    document.getElementById('e-last_name').value     = identity.last_name || '';
+    document.getElementById('e-date_of_birth').value = identity.date_of_birth || '';
+    document.getElementById('e-place_of_birth').value = identity.place_of_birth || '';
+    document.getElementById('e-nationality').value   = identity.nationality || '';
+    document.getElementById('e-gender').value        = identity.gender || '';
+    document.getElementById('e-email').value         = identity.email || '';
+    document.getElementById('e-phone').value         = identity.phone || '';
+
+    document.getElementById('edit-card').classList.remove('d-none');
+
+    // Type-specific
+    if (identity.type === 'student' || identity.type === 'phd') {
+        document.getElementById('edit-student').classList.remove('d-none');
+        if (details) {
+            document.getElementById('e-sub_type_student').value = details.sub_type || '';
+            document.getElementById('e-national_id').value  = details.national_id || '';
+            document.getElementById('e-major').value        = details.major || '';
+            document.getElementById('e-entry_year').value   = details.entry_year || '';
+            document.getElementById('e-faculty_name').value = details.faculty || '';
+            document.getElementById('e-department').value   = details.department || '';
+            document.getElementById('e-group_name').value   = details.group_name || '';
+            document.getElementById('e-diploma_type').value = details.diploma_type || '';
+            document.getElementById('e-diploma_year').value = details.diploma_year || '';
+            document.getElementById('e-scholarship').checked = details.scholarship || false;
+        }
+    }
+
+    if (identity.type === 'faculty') {
+        document.getElementById('edit-faculty').classList.remove('d-none');
+        if (details) {
+            document.getElementById('e-rank').value           = details.rank || '';
+            document.getElementById('e-employment_category').value = details.employment_category || '';
+            document.getElementById('e-appointment_date').value = details.appointment_date || '';
+            document.getElementById('e-primary_dept').value   = details.primary_dept || '';
+            document.getElementById('e-secondary_depts').value = details.secondary_depts || '';
+            document.getElementById('e-sub_type_faculty').value = details.sub_type || '';
+            document.getElementById('e-office_location').value = details.office_location || '';
+            document.getElementById('e-research_areas').value = details.research_areas || '';
+            document.getElementById('e-contract_type').value  = details.contract_type || '';
+            document.getElementById('e-contract_start').value = details.contract_start || '';
+            document.getElementById('e-contract_end').value   = details.contract_end || '';
+            document.getElementById('e-teaching_hours').value = details.teaching_hours || '';
+            document.getElementById('e-phd_institution').value = details.phd_institution || '';
+            document.getElementById('e-habilitation').checked = details.habilitation || false;
+        }
+    }
+
+    if (identity.type === 'staff' || identity.type === 'temporary') {
+        document.getElementById('edit-staff').classList.remove('d-none');
+        if (details) {
+            document.getElementById('e-sub_type_staff').value = details.sub_type || '';
+            document.getElementById('e-job_title').value       = details.job_title || '';
+            document.getElementById('e-staff_department').value = details.department || '';
+            document.getElementById('e-grade').value           = details.grade || '';
+            document.getElementById('e-entry_date').value      = details.entry_date || '';
+        }
+    }
+
+    // Status section
+    document.getElementById('edit-status').classList.remove('d-none');
+    document.getElementById('current-status-badge').innerHTML = getStatusBadge(identity.status);
+    const allowed = getAllowedTransitions(identity.status);
+    const btnContainer = document.getElementById('status-buttons');
+    if (allowed.length === 0) {
+        btnContainer.innerHTML = '<small class="text-muted">No transitions allowed from this status.</small>';
+    } else {
+        allowed.forEach(function(s) {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-sm btn-outline-secondary';
+            btn.textContent = '→ ' + s;
+            btn.onclick = function() { changeStatusInline(s); };
+            btnContainer.appendChild(btn);
+        });
+    }
+
+    document.getElementById('save-section').classList.remove('d-none');
+}
+
+// Change status directly from edit page
+async function changeStatusInline(newStatus) {
+    const currentStatus = currentIdentity.status;
+    const note = prompt(`Note for status change (${currentStatus} → ${newStatus}):`) || '';
+
+    showLoading();
+
+    await supabase
+        .from('identities')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', currentIdentity.id);
+
+    await supabase
+        .from('status_history')
+        .insert({ identity_id: currentIdentity.id, old_status: currentStatus, new_status: newStatus, note: note });
+
+    currentIdentity.status = newStatus;
+    hideLoading();
+
+    // Refresh status badge and buttons
+    document.getElementById('current-status-badge').innerHTML = getStatusBadge(newStatus);
+    document.getElementById('status-buttons').innerHTML = '';
+    const allowed = getAllowedTransitions(newStatus);
+    if (allowed.length === 0) {
+        document.getElementById('status-buttons').innerHTML = '<small class="text-muted">No further transitions.</small>';
+    } else {
+        allowed.forEach(function(s) {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-sm btn-outline-secondary';
+            btn.textContent = '→ ' + s;
+            btn.onclick = function() { changeStatusInline(s); };
+            document.getElementById('status-buttons').appendChild(btn);
+        });
+    }
+
+    alert('Status changed to: ' + newStatus);
+}
+
+// Save all edits to the database
+async function saveEdit() {
+    // Basic validation
+    if (!isValidName(document.getElementById('e-first_name').value)) {
+        alert('First name must be at least 2 characters.');
+        return;
+    }
+    if (!isValidName(document.getElementById('e-last_name').value)) {
+        alert('Last name must be at least 2 characters.');
+        return;
+    }
+    if (!isValidEmail(document.getElementById('e-email').value)) {
+        alert('Please enter a valid email.');
+        return;
+    }
+    if (!isValidPhone(document.getElementById('e-phone').value)) {
+        alert('Phone must be digits only (8-20 characters).');
+        return;
+    }
+
+    showLoading();
+
+    // Update main identity record
+    const { error } = await supabase
+        .from('identities')
+        .update({
+            first_name:    document.getElementById('e-first_name').value.trim(),
+            last_name:     document.getElementById('e-last_name').value.trim(),
+            date_of_birth: document.getElementById('e-date_of_birth').value,
+            place_of_birth: document.getElementById('e-place_of_birth').value.trim(),
+            nationality:   document.getElementById('e-nationality').value.trim(),
+            gender:        document.getElementById('e-gender').value,
+            email:         document.getElementById('e-email').value.trim(),
+            phone:         document.getElementById('e-phone').value.trim(),
+            updated_at:    new Date().toISOString()
+        })
+        .eq('id', currentIdentity.id);
+
+    if (error) {
+        hideLoading();
+        if (error.code === '23505') {
+            alert('This email is already used by another identity.');
+        } else {
+            alert('Error saving: ' + error.message);
+        }
+        return;
+    }
+
+    // Update type-specific details
+    const type = currentIdentity.type;
+
+    if (type === 'student' || type === 'phd') {
+        await supabase.from('student_details').update({
+            sub_type:      document.getElementById('e-sub_type_student').value,
+            national_id:   document.getElementById('e-national_id').value.trim(),
+            major:         document.getElementById('e-major') ? document.getElementById('e-major').value.trim() : '',
+            entry_year:    document.getElementById('e-entry_year').value || null,
+            faculty:       document.getElementById('e-faculty_name').value.trim(),
+            department:    document.getElementById('e-department').value.trim(),
+            group_name:    document.getElementById('e-group_name').value.trim(),
+            diploma_type:  document.getElementById('e-diploma_type').value.trim(),
+            diploma_year:  document.getElementById('e-diploma_year').value || null,
+            scholarship:   document.getElementById('e-scholarship').checked
+        }).eq('identity_id', currentIdentity.id);
+    }
+
+    if (type === 'faculty') {
+        await supabase.from('faculty_details').update({
+            rank:             document.getElementById('e-rank').value,
+            employment_category: document.getElementById('e-employment_category').value.trim(),
+            appointment_date:   document.getElementById('e-appointment_date').value || null,
+            primary_dept:     document.getElementById('e-primary_dept').value.trim(),
+            secondary_depts:  document.getElementById('e-secondary_depts').value.trim(),
+            sub_type:         document.getElementById('e-sub_type_faculty').value,
+            office_location:  document.getElementById('e-office_location').value.trim(),
+            research_areas:   document.getElementById('e-research_areas').value.trim(),
+            contract_type:    document.getElementById('e-contract_type').value.trim(),
+            contract_start:   document.getElementById('e-contract_start').value || null,
+            contract_end:     document.getElementById('e-contract_end').value || null,
+            teaching_hours:   document.getElementById('e-teaching_hours').value || null,
+            phd_institution:  document.getElementById('e-phd_institution').value.trim(),
+            habilitation:     document.getElementById('e-habilitation').checked
+        }).eq('identity_id', currentIdentity.id);
+    }
+
+    if (type === 'staff' || type === 'temporary') {
+        await supabase.from('staff_details').update({
+            sub_type:    document.getElementById('e-sub_type_staff').value,
+            job_title:   document.getElementById('e-job_title').value.trim(),
+            department:  document.getElementById('e-staff_department').value.trim(),
+            grade:       document.getElementById('e-grade').value.trim(),
+            entry_date:  document.getElementById('e-entry_date').value || null
+        }).eq('identity_id', currentIdentity.id);
+    }
+
+    hideLoading();
+
+    document.getElementById('success-msg').classList.remove('d-none');
+    window.scrollTo(0, 0);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+}
+
+/* Card hover effect */
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+    transition: box-shadow 0.2s;
+}
+
+/* Section titles in forms */
+.section-title {
+    background-color: #e9ecef;
+    padding: 8px 12px;
+    border-left: 4px solid #0d6efd;
+    margin-bottom: 15px;
+    font-weight: bold;
+    border-radius: 0 4px 4px 0;
+}
+
+/* The generated ID display box */
+#generated-id-box {
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #0d6efd;
+    background: #e7f0ff;
+    border: 2px dashed #0d6efd;
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+/* Search result rows */
+.result-row:hover {
+    background-color: #f0f4ff;
+    cursor: pointer;
+}
+
+/* Status badges */
+.status-pending   { background-color: #6c757d !important; }
+.status-active    { background-color: #198754 !important; }
+.status-suspended { background-color: #ffc107 !important; color: #000 !important; }
+.status-inactive  { background-color: #dc3545 !important; }
+.status-archived  { background-color: #212529 !important; }
+
+/* Form field validation feedback */
+.field-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+}
+
+/* Detail view labels */
+.detail-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Loading spinner overlay */
+#loading {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.7);
+    z-index: 9999;
+    text-align: center;
+    padding-top: 20%;
+    font-size: 1.3rem;
+}

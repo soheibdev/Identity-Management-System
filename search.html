@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Identities – Batna 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading">⏳ Searching...</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">🎓 Batna 2 ID System</a>
+        <span class="text-white">Search &amp; Manage Identities</span>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5">
+
+    <!-- Search Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white"><strong>🔍 Search Filters</strong></div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="search-name" class="form-label">Name (First or Last)</label>
+                    <input type="text" id="search-name" class="form-control" placeholder="e.g. Ahmed">
+                </div>
+                <div class="col-md-4">
+                    <label for="search-email" class="form-label">Email</label>
+                    <input type="text" id="search-email" class="form-control" placeholder="e.g. name@email.com">
+                </div>
+                <div class="col-md-4">
+                    <label for="search-uid" class="form-label">Unique ID</label>
+                    <input type="text" id="search-uid" class="form-control" placeholder="e.g. STU202400001">
+                </div>
+                <div class="col-md-4">
+                    <label for="search-type" class="form-label">Identity Type</label>
+                    <select id="search-type" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="student">Student</option>
+                        <option value="phd">PhD Candidate</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="staff">Staff</option>
+                        <option value="temporary">Temporary / External</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="search-status" class="form-label">Status</label>
+                    <select id="search-status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Active">Active</option>
+                        <option value="Suspended">Suspended</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-success w-100" onclick="doSearch()">🔍 Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div id="results-section" class="d-none">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Results: <span id="result-count">0</span> found</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>UID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="no-results" class="alert alert-warning d-none">
+        No identities found matching your search criteria.
+    </div>
+
+</div>
+
+<!-- Detail / Edit Modal -->
+<div class="modal fade" id="detail-modal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Identity Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content inserted by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="supabase.js"></script>
+<script src="utils.js"></script>
+<script>
+
+let detailModal = null;
+
+// Run search with current filter values
+async function doSearch() {
+    showLoading();
+
+    const name   = document.getElementById('search-name').value.trim();
+    const email  = document.getElementById('search-email').value.trim();
+    const uid    = document.getElementById('search-uid').value.trim();
+    const type   = document.getElementById('search-type').value;
+    const status = document.getElementById('search-status').value;
+
+    // Build the query
+    let query = supabase
+        .from('identities')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+    if (uid)    query = query.ilike('uid', `%${uid}%`);
+    if (email)  query = query.ilike('email', `%${email}%`);
+    if (type)   query = query.eq('type', type);
+    if (status) query = query.eq('status', status);
+
+    // Name search: check first_name OR last_name
+    if (name) {
+        query = query.or(`first_name.ilike.%${name}%,last_name.ilike.%${name}%`);
+    }
+
+    const { data, error } = await query;
+
+    hideLoading();
+
+    if (error) {
+        alert('Search error: ' + error.message);
+        return;
+    }
+
+    displayResults(data || []);
+}
+
+// Render search results in the table
+function displayResults(rows) {
+    const tbody = document.getElementById('results-body');
+    const resultsSection = document.getElementById('results-section');
+    const noResults = document.getElementById('no-results');
+
+    tbody.innerHTML = '';
+
+    if (rows.length === 0) {
+        resultsSection.classList.add('d-none');
+        noResults.classList.remove('d-none');
+        return;
+    }
+
+    noResults.classList.add('d-none');
+    resultsSection.classList.remove('d-none');
+    document.getElementById('result-count').textContent = rows.length;
+
+    rows.forEach(function(row) {
+        const date = row.created_at ? row.created_at.substring(0,10) : '';
+        const tr = document.createElement('tr');
+        tr.className = 'result-row';
+        tr.innerHTML = `
+            <td><code>${row.uid}</code></td>
+            <td>${row.first_name} ${row.last_name}</td>
+            <td>${capitalizeFirst(row.type)}</td>
+            <td>${row.email}</td>
+            <td>${getStatusBadge(row.status)}</td>
+            <td>${date}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="viewDetails(${row.id})">👁 View</button>
+                <button class="btn btn-sm btn-outline-warning" onclick="editIdentity(${row.id})">✏️ Edit</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// View full details in modal
+async function viewDetails(id) {
+    showLoading();
+
+    // Load identity
+    const { data: identity } = await supabase
+        .from('identities')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    // Load type-specific data
+    let extra = null;
+    if (identity.type === 'student' || identity.type === 'phd') {
+        const { data } = await supabase.from('student_details').select('*').eq('identity_id', id).single();
+        extra = data;
+    } else if (identity.type === 'faculty') {
+        const { data } = await supabase.from('faculty_details').select('*').eq('identity_id', id).single();
+        extra = data;
+    } else if (identity.type === 'staff' || identity.type === 'temporary') {
+        const { data } = await supabase.from('staff_details').select('*').eq('identity_id', id).single();
+        extra = data;
+    }
+
+    // Load status history
+    const { data: history } = await supabase
+        .from('status_history')
+        .select('*')
+        .eq('identity_id', id)
+        .order('changed_at', { ascending: false });
+
+    hideLoading();
+
+    // Build modal content
+    let html = `
+        <div class="row mb-3">
+            <div class="col-12">
+                <div id="generated-id-box">${identity.uid}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="section-title">Personal Information</h6>
+                <table class="table table-sm table-bordered">
+                    <tr><td class="detail-label">Full Name</td><td>${identity.first_name} ${identity.last_name}</td></tr>
+                    <tr><td class="detail-label">Date of Birth</td><td>${identity.date_of_birth}</td></tr>
+                    <tr><td class="detail-label">Place of Birth</td><td>${identity.place_of_birth || '—'}</td></tr>
+                    <tr><td class="detail-label">Nationality</td><td>${identity.nationality || '—'}</td></tr>
+                    <tr><td class="detail-label">Gender</td><td>${identity.gender || '—'}</td></tr>
+                    <tr><td class="detail-label">Email</td><td>${identity.email}</td></tr>
+                    <tr><td class="detail-label">Phone</td><td>${identity.phone || '—'}</td></tr>
+                    <tr><td class="detail-label">Type</td><td>${capitalizeFirst(identity.type)}</td></tr>
+                    <tr><td class="detail-label">Status</td><td>${getStatusBadge(identity.status)}</td></tr>
+                    <tr><td class="detail-label">Created</td><td>${identity.created_at ? identity.created_at.substring(0,10) : '—'}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+    `;
+
+    // Add type-specific info
+    if (extra) {
+        if (identity.type === 'student' || identity.type === 'phd') {
+            html += `
+                <h6 class="section-title">Student Details</h6>
+                <table class="table table-sm table-bordered">
+                    <tr><td class="detail-label">Sub-type</td><td>${extra.sub_type || '—'}</td></tr>
+                    <tr><td class="detail-label">National ID</td><td>${extra.national_id || '—'}</td></tr>
+                    <tr><td class="detail-label">Diploma</td><td>${extra.diploma_type || '—'} (${extra.diploma_year || '—'}) ${extra.diploma_honors || ''}</td></tr>
+                    <tr><td class="detail-label">Major</td><td>${extra.major || '—'}</td></tr>
+                    <tr><td class="detail-label">Entry Year</td><td>${extra.entry_year || '—'}</td></tr>
+                    <tr><td class="detail-label">Faculty</td><td>${extra.faculty || '—'}</td></tr>
+                    <tr><td class="detail-label">Department</td><td>${extra.department || '—'}</td></tr>
+                    <tr><td class="detail-label">Group</td><td>${extra.group_name || '—'}</td></tr>
+                    <tr><td class="detail-label">Scholarship</td><td>${extra.scholarship ? 'Yes' : 'No'}</td></tr>
+                </table>
+            `;
+        } else if (identity.type === 'faculty') {
+            html += `
+                <h6 class="section-title">Faculty Details</h6>
+                <table class="table table-sm table-bordered">
+                    <tr><td class="detail-label">Sub-type</td><td>${extra.sub_type || '—'}</td></tr>
+                    <tr><td class="detail-label">Rank</td><td>${extra.rank || '—'}</td></tr>
+                    <tr><td class="detail-label">Employment</td><td>${extra.employment_category || '—'}</td></tr>
+                    <tr><td class="detail-label">Primary Dept</td><td>${extra.primary_dept || '—'}</td></tr>
+                    <tr><td class="detail-label">Office</td><td>${extra.office_location || '—'}</td></tr>
+                    <tr><td class="detail-label">Research Areas</td><td>${extra.research_areas || '—'}</td></tr>
+                    <tr><td class="detail-label">HDR</td><td>${extra.habilitation ? 'Yes' : 'No'}</td></tr>
+                    <tr><td class="detail-label">Contract</td><td>${extra.contract_type || '—'} (${extra.contract_start || '—'} to ${extra.contract_end || '—'})</td></tr>
+                    <tr><td class="detail-label">Teaching Hours</td><td>${extra.teaching_hours || '—'}</td></tr>
+                </table>
+            `;
+        } else {
+            html += `
+                <h6 class="section-title">Staff Details</h6>
+                <table class="table table-sm table-bordered">
+                    <tr><td class="detail-label">Sub-type</td><td>${extra.sub_type || '—'}</td></tr>
+                    <tr><td class="detail-label">Job Title</td><td>${extra.job_title || '—'}</td></tr>
+                    <tr><td class="detail-label">Department</td><td>${extra.department || '—'}</td></tr>
+                    <tr><td class="detail-label">Grade</td><td>${extra.grade || '—'}</td></tr>
+                    <tr><td class="detail-label">Entry Date</td><td>${extra.entry_date || '—'}</td></tr>
+                </table>
+            `;
+        }
+    }
+
+    html += `</div></div>`;
+
+    // Status change section
+    const allowed = getAllowedTransitions(identity.status);
+    if (allowed.length > 0) {
+        html += `
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="section-title">Change Status</h6>
+                    <div class="d-flex gap-2 flex-wrap">
+        `;
+        allowed.forEach(function(s) {
+            html += `<button class="btn btn-sm btn-outline-secondary" onclick="changeStatus(${identity.id}, '${identity.status}', '${s}')">${s}</button>`;
+        });
+        html += `</div></div>`;
+    }
+
+    // Status history
+    if (history && history.length > 0) {
+        html += `
+            <div class="col-md-6">
+                <h6 class="section-title">Status History</h6>
+                <ul class="list-group list-group-flush">
+        `;
+        history.forEach(function(h) {
+            const date = h.changed_at ? h.changed_at.substring(0,10) : '';
+            html += `<li class="list-group-item py-1 px-0">
+                ${date}: ${h.old_status || 'Created'} → <strong>${h.new_status}</strong>
+                ${h.note ? '<small class="text-muted">(' + h.note + ')</small>' : ''}
+            </li>`;
+        });
+        html += `</ul></div>`;
+    }
+
+    html += `</div>
+        <hr>
+        <button class="btn btn-warning" onclick="editIdentity(${identity.id}); detailModal.hide();">✏️ Edit This Identity</button>
+    `;
+
+    document.getElementById('modal-body').innerHTML = html;
+    if (!detailModal) {
+        detailModal = new bootstrap.Modal(document.getElementById('detail-modal'));
+    }
+    detailModal.show();
+}
+
+// Change identity status with validation of transitions
+async function changeStatus(id, currentStatus, newStatus) {
+    const allowed = getAllowedTransitions(currentStatus);
+    if (!allowed.includes(newStatus)) {
+        alert(`Cannot change from ${currentStatus} to ${newStatus}.`);
+        return;
+    }
+
+    const note = prompt(`Optional: Enter a note for this status change (${currentStatus} → ${newStatus}):`) || '';
+
+    showLoading();
+
+    await supabase
+        .from('identities')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', id);
+
+    await supabase
+        .from('status_history')
+        .insert({ identity_id: id, old_status: currentStatus, new_status: newStatus, note: note });
+
+    hideLoading();
+    alert(`Status changed to: ${newStatus}`);
+
+    // Refresh the modal
+    if (detailModal) detailModal.hide();
+    doSearch();
+}
+
+// Redirect to edit page
+function editIdentity(id) {
+    window.location.href = `edit.html?id=${id}`;
+}
+
+// Simple capitalize
+function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Auto-search on page load if query params exist (e.g. from other pages)
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('uid')) {
+        document.getElementById('search-uid').value = params.get('uid');
+        doSearch();
+    }
+};
+
+</script>
+</body>
+</html>
